@@ -92,9 +92,12 @@ def StartAWSColdInstance(model_name):
     instance_tag = cold_instance_ids[model_name]
     print(instance_tag)
     with open('userdata.txt', 'r') as file:
-         data = file.read().format(detector = instance_tag, detector_weights = model_name)
+        data = file.read().format(detector = instance_tag, detector_weights = model_name)
     print(data)
-    response = client.run_instances(ImageId='ami-072519eedc1730252', UserData=str(data), MaxCount=1,MinCount=1, SubnetId='subnet-0c2eace77b3b213bb', SecurityGroupIds=['sg-002b99dc572b09491'], InstanceType='g4dn.xlarge', IamInstanceProfile={'Arn': 'arn:aws:iam::352435047368:instance-profile/WorkerNode' }, InstanceInitiatedShutdownBehavior='terminate', BlockDeviceMappings=[{'DeviceName': '/dev/xvda', 'Ebs':{'VolumeSize': 200, 'DeleteOnTermination': True}}], KeyName='fakefinder-apiserver')
+    with open("infrastructure.json") as jsonfile:
+        infra = json.load(jsonfile)
+    print(infra)
+    response = client.run_instances(ImageId=infra['api_image_id'], UserData=str(data), MaxCount=1,MinCount=1, SubnetId=infra['subnet_id'], SecurityGroupIds=[infra['security_group_id']], InstanceType='g4dn.xlarge', IamInstanceProfile={'Arn': infra['arn'] }, InstanceInitiatedShutdownBehavior='terminate', BlockDeviceMappings=[{'DeviceName': '/dev/xvda', 'Ebs':{'VolumeSize': 200, 'DeleteOnTermination': True}}], KeyName='fakefinder-apiserver')
     instance_id = response['Instances'][0]['InstanceId']
     print(instance_id)
     ColdInstanceIds.append(instance_id)

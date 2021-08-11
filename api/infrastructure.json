@@ -1,0 +1,6 @@
+{
+  "api_image_id": "ami-072519eedc1730252",
+  "subnet_id": "subnet-0c2eace77b3b213bb",
+  "security_group_id": "sg-002b99dc572b09491",
+  "arn": "arn:aws:iam::352435047368:instance-profile/WorkerNode"
+}
